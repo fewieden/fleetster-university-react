@@ -1,5 +1,10 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import config from '../../config';
+
+const linkedButton = {
+	textDecoration: 'none'
+};
 
 export class Register extends Component {
 
@@ -102,7 +107,7 @@ export class Register extends Component {
 				{error.repeatedPassword && <Fragment><label htmlFor="repeatedPassword">{error.repeatedPassword}</label><br /></Fragment>}
 				<input type='password' name='repeatedPassword' placeholder='Repeat password*' value={repeatedPassword} onChange={(e) => this.onChange(e)} /><br />
 
-				<button onClick={() => this.props.transitionTo('login')}>Back to Login</button>
+				<Link style={linkedButton} to='login'>Back to Login</Link>
 				<button onClick={() => this.register()}>Register</button>
 			</div>
 		);

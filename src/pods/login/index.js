@@ -1,5 +1,10 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import config from '../../config';
+
+const linkedButton = {
+	textDecoration: 'none'
+};
 
 export class Login extends Component {
 
@@ -81,7 +86,7 @@ export class Login extends Component {
 				{error.password && <Fragment><label htmlFor="password">{error.password}</label><br /></Fragment>}
 				<input type='password' name='password' placeholder='Password*' value={password} onChange={(e) => this.onChange(e)} /><br />
 
-				<button onClick={() => this.props.transitionTo('register')}>Go to Register</button>
+				<Link style={linkedButton} to='/register'>Go to Register</Link>
 				<button onClick={() => this.login()}>Login</button>
 			</div>
 		);
