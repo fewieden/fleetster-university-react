@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { Link } from 'react-router-dom';
-import config from '../../config';
+import config from '../../../config';
 
 const linkedButton = {
 	textDecoration: 'none'
 };
 
-export class Register extends Component {
-
+class Register extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -86,7 +87,7 @@ export class Register extends Component {
 		.then(res => res.json())
 		.then((res) => {
 			alert(`User ID: ${res._id}`);
-			this.props.transitionTo('login');
+			this.props.transitionTo('/');
 		})
 		.catch((e) => alert('failed'))
 	}
@@ -96,8 +97,6 @@ export class Register extends Component {
 
 		return (
 			<div>
-				Name: {name}<br />
-				Password: {password}<br />
 				{error.name && <Fragment><label htmlFor="name">{error.name}</label><br /></Fragment>}
 				<input type='text' name='name' placeholder='Name*' value={name} onChange={(e) => this.onChange(e)} /><br />
 				{error.email && <Fragment><label htmlFor="email">{error.email}</label><br /></Fragment>}
@@ -107,9 +106,15 @@ export class Register extends Component {
 				{error.repeatedPassword && <Fragment><label htmlFor="repeatedPassword">{error.repeatedPassword}</label><br /></Fragment>}
 				<input type='password' name='repeatedPassword' placeholder='Repeat password*' value={repeatedPassword} onChange={(e) => this.onChange(e)} /><br />
 
-				<Link style={linkedButton} to='login'>Back to Login</Link>
+				<Link style={linkedButton} to='/'>Back to Login</Link>
 				<button onClick={() => this.register()}>Register</button>
 			</div>
 		);
 	}
 }
+
+Register = connect(null, dispatch => ({
+	transitionTo: path => dispatch(push(path))
+}))(Register);
+
+export { Register };

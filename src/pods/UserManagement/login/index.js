@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import config from '../../config';
+import { push } from 'react-router-redux';
+import config from '../../../config';
 
 const linkedButton = {
 	textDecoration: 'none'
 };
 
-export class Login extends Component {
+class Login extends Component {
 
 	constructor(props) {
 		super(props);
@@ -65,20 +67,21 @@ export class Login extends Component {
 			},
 			body: JSON.stringify({ _id, password })
 		})
-			.then(res => res.json())
-			.then((user) => {
-				if (user.error) {
-					alert(user.error);
-					return;
-				}
+		.then(res => res.json())
+		.then((res) => {
+			if (res.error) {
+				alert(res.error);
+				return;
+			}
 
-				this.props.transitionTo('profile', {token: user.token, _id });
-			})
-			.catch((e) => alert('failed'))
+			this.props.setToken(res.token);
+			this.props.transitionTo('/profile/' + _id);
+		})
+		.catch((e) => alert('failed'))
 	}
 
 	render() {
-		const { name, email, password, repeatedPassword, error } = this.state;
+		const { name, password, error } = this.state;
 		return (
 			<div>
 				{error._id && <Fragment><label htmlFor="_id">{error._id}</label><br /></Fragment>}
@@ -92,3 +95,13 @@ export class Login extends Component {
 		);
 	}
 }
+
+Login = connect(null, dispatch => ({
+	setToken: token => dispatch({
+		type: 'SET_TOKEN',
+		payload: token
+	}),
+	transitionTo: path => dispatch(push(path))
+}))(Login);
+
+export { Login };

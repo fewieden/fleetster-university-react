@@ -1,18 +1,20 @@
 import createHistory from 'history/createBrowserHistory';
 import React from 'react';
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router';
-import { ConnectedRouter, routerReducer } from 'react-router-redux';
+import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
 
 import './App.css';
 import * as initialState from './initialState';
-import {Login, Register, Profile} from './pods';
+import { Login, Register, Profile, user } from './pods';
 import logo from './logo.svg';
 
-const store = createStore(combineReducers({ routing: routerReducer }), initialState);
-
 const history = createHistory();
+
+const middleware = routerMiddleware(history);
+
+const store = createStore(combineReducers({ routing: routerReducer, user }), initialState, applyMiddleware(middleware));
 
 function App() {
     return (
@@ -22,9 +24,9 @@ function App() {
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">Welcome to <s>React</s><span className='overwrite'>fleetster University</span></h1>
                 </header>
-                <Route path='/login' component={Login} />
+                <Route exact path='/' component={Login} />
                 <Route path='/register' component={Register} />
-                <Route path='/profile' component={Profile} />
+                <Route path='/profile/:id' component={Profile} />
             </div>
         </ConnectedRouter>
     );

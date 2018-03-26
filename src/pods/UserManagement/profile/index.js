@@ -1,22 +1,13 @@
 import React, { Component } from 'react';
-import config from '../../config';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import config from '../../../config';
 
-export class Profile extends Component {
-
-	constructor(props) {
-		super(props);
-		console.log(props);
-		this.state = {
-			_id: props.params._id,
-			token: props.params.token,
-			user: {},
-		};
-	}
-
+class Profile extends Component {
 	componentDidMount() {
-		const { token, _id } = this.state;
-		console.log(token, _id);
-		fetch(`${config.BASE_URL}/user/${_id}`, {
+		const { token } = this.props;
+		const { id } = this.props.match.params;
+		fetch(`${config.BASE_URL}/user/${id}`, {
 			method: 'GET',
 			headers: {
 				'Authorization': token
@@ -25,14 +16,14 @@ export class Profile extends Component {
 		.then(res => res.json())
 		.then((user) => {
 			if(!user.error) {
-				this.setState({ user });
+				this.props.setUser(user);
 			}
 		})
 		.catch((e) => alert('failed'))
 	}
 
 	logout() {
-		const { token } = this.state;
+		const { token } = this.props;
 		fetch(`${config.BASE_URL}/logout`, {
 			method: 'POST',
 			headers: {
@@ -43,13 +34,14 @@ export class Profile extends Component {
 		})
 		.then(res => res.json())
 		.then(() => {
-			this.props.transitionTo('login');
+			this.props.clearUser();
+			this.props.transitionTo('/');
 		})
 		.catch((e) => alert('failed'))
 	}
 
 	render() {
-		const { user, token } = this.state;
+		const { user, token } = this.props;
 		return (
 			<div>
 				{user &&
@@ -66,3 +58,14 @@ export class Profile extends Component {
 		);
 	}
 }
+
+Profile = connect(state => ({
+	user: state.user.user,
+	token: state.user.token
+}), dispatch => ({
+	setUser: user => dispatch({ type: 'SET_USER', payload: user }),
+	clearUser: () => dispatch({ type: 'CLEAR_USER' }),
+	transitionTo: path => dispatch(push(path))
+}))(Profile);
+
+export { Profile };
