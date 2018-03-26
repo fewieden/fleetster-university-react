@@ -11,3 +11,5 @@
 6. (???)
 
 7. Profit
+
+8. Integrate redux
