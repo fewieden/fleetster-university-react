@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import { Link } from 'react-router-dom';
-import config from '../../../config';
+
+import { register } from '../thunks';
 
 const linkedButton = {
 	textDecoration: 'none'
@@ -77,19 +77,7 @@ class Register extends Component {
 
 		const { name, email, password } = this.state;
 
-		fetch(`${config.BASE_URL}/register`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ name, email, password })
-		})
-		.then(res => res.json())
-		.then((res) => {
-			alert(`User ID: ${res._id}`);
-			this.props.transitionTo('/');
-		})
-		.catch((e) => alert('failed'))
+		this.props.register(name, email, password);
 	}
 
 	render() {
@@ -113,8 +101,6 @@ class Register extends Component {
 	}
 }
 
-Register = connect(null, dispatch => ({
-	transitionTo: path => dispatch(push(path))
-}))(Register);
+Register = connect(null, { register })(Register);
 
 export { Register };
