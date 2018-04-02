@@ -4,6 +4,7 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
+import thunk from 'redux-thunk';
 
 import './App.css';
 import * as initialState from './initialState';
@@ -14,7 +15,7 @@ const history = createHistory();
 
 const middleware = routerMiddleware(history);
 
-const store = createStore(combineReducers({ routing: routerReducer, user }), initialState, applyMiddleware(middleware));
+const store = createStore(combineReducers({ routing: routerReducer, user }), initialState, applyMiddleware(thunk, middleware));
 
 function App() {
     return (
