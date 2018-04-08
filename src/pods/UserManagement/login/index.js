@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { push } from 'react-router-redux';
-import config from '../../../config';
+
+import { login } from '../thunks';
 
 const linkedButton = {
 	textDecoration: 'none'
@@ -60,24 +60,7 @@ class Login extends Component {
 
 		const { _id, password } = this.state;
 
-		fetch(`${config.BASE_URL}/login`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ _id, password })
-		})
-		.then(res => res.json())
-		.then((res) => {
-			if (res.error) {
-				alert(res.error);
-				return;
-			}
-
-			this.props.setToken(res.token);
-			this.props.transitionTo('/profile/' + _id);
-		})
-		.catch((e) => alert('failed'))
+		this.props.login(_id, password);
 	}
 
 	render() {
@@ -96,12 +79,6 @@ class Login extends Component {
 	}
 }
 
-Login = connect(null, dispatch => ({
-	setToken: token => dispatch({
-		type: 'SET_TOKEN',
-		payload: token
-	}),
-	transitionTo: path => dispatch(push(path))
-}))(Login);
+Login = connect(null, { login })(Login);
 
 export { Login };
